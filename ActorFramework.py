@@ -1,30 +1,49 @@
 """ ActorFramework """
 
+import Actor
+
 
 class ActorFramework:
 
     def __init__(self):
         self.actors = []
         self.actorIndex = 0
-        self.moreWorkRequired = True
+        self.stepsCount = 0
+
+    def removeFinishedActors(self):
+        pass
+
+    def findNextReadyActor(self):
+        if len(self.actors) == 0:
+            return None
+
+        n = len(self.actors)
+        if self.actorIndex >= n:
+            self.actorIndex = 0
+
+        i = 0
+        while True:
+            if i == n:
+                return None
+            actor = self.actors[self.actorIndex]
+            self.actorIndex += 1
+            if self.actorIndex >= n:
+                self.actorIndex = 0
+            if actor.state == Actor.AS_READY:
+                return actor
+            i += 1
 
     def step(self):
-        if self.actorIndex >= len(self.actors):
-            self.actorIndex = 0
-            if self.moreWorkRequired:
-                return True
-            self.moreWorkRequired = True
-        actor = self.actors[self.actorIndex]
-        r = actor.step()
-        if actor.finished:
-            del self.actors[self.actorIndex]
-        else:
-            self.actorIndex += 1
-            if not r:
-                self.moreWorkRequired = False
-        return r
+        self.stepsCount += 1
+        actor = self.findNextReadyActor()
+        if actor is None:
+            return True
+        actor.step()
+        return False
 
     def steps(self, numberOfSteps):
+        if numberOfSteps == 0:
+            return False
         count = 0
         while True:
             r = self.step()
@@ -35,13 +54,12 @@ class ActorFramework:
                 return False
 
     def run(self):
-        count = 0
         while True:
             r = self.step()
-            count += 1
             if r:
-                return True
+                return
 
     def addActor(self, actor):
+        actor.framework = self
         self.actors.append(actor)
 
