@@ -42,16 +42,13 @@ class ActorFramework:
         return False
 
     def steps(self, numberOfSteps):
-        if numberOfSteps == 0:
-            return False
-        count = 0
+        finalStepsCount = self.stepsCount + numberOfSteps
         while True:
+            if self.stepsCount == finalStepsCount:
+                return False
             r = self.step()
-            count += 1
             if r:
                 return True
-            if count == numberOfSteps:
-                return False
 
     def run(self):
         while True:

@@ -194,7 +194,7 @@ class ActorFrameworkTest(unittest.TestCase):
 
         self.assertTrue(self.fw.stepsCount, n + 1)
 
-    def tst_steps_ifNoActorsAndArgumentIsZeroReturnFalse(self):
+    def test_steps_ifNoActorsAndArgumentIsZeroReturnFalse(self):
 
         r = self.fw.steps(0)
 
